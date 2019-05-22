@@ -7,7 +7,7 @@ from fix_csv import FixCSV
 
 class TestFixCSV(unittest.TestCase):
     def setUp(self):
-        self.fcsv = FixCSV()
+        self.fcsv = FixCSV(autofix=True, quiet=True)
 
     def test_add_possible_value(self):
         self.fcsv.add_possible_value("possible")
@@ -34,7 +34,8 @@ class TestFixCSV(unittest.TestCase):
             "CTGV3",
         ]
         self.fcsv.set_possible_values(possible_values)
-        self.fcsv.fix_csv_column("DKEFSFAKEDATA.csv", 9)
+        fixed_column = self.fcsv.fix_csv_column("DKEFSFAKEDATA.csv", 9)
+        self.assertEqual(len(set(fixed_column)), len(possible_values))
 
 
 if __name__ == "__main__":
