@@ -1,3 +1,4 @@
+import sys
 from typing import List
 import pandas as pd
 from difflib import SequenceMatcher
@@ -11,6 +12,7 @@ class FixCSV:
         self.delimiter = delimiter
         self.autofix = autofix
         self.quiet = quiet
+        self.fixed_csv = None
 
     def set_possible_values(self, possible_values: List[str]):
         self.possible_values = possible_values
@@ -25,6 +27,8 @@ class FixCSV:
         csv = pd.read_csv(csv_path, delimiter=self.delimiter, header=None)
         csv_column = list(csv.iloc[:, column])
         fixed_column = [self.validate_string(val) for val in csv_column]
+        csv.iloc[:, column] = pd.Series(fixed_column)
+        self.fixed_csv = csv
         return fixed_column
 
     def validate_string(self, string_to_validate: str):
@@ -47,6 +51,7 @@ class FixCSV:
 
     def manual_fix_string(self, ratios, string_to_validate: str):
         # via https://stackoverflow.com/questions/13070461/get-index-of-the-top-n-values-of-a-list-in-python
+        print("\n")
         sorted_ratios = sorted(
             range(len(ratios)), key=lambda i: ratios[i], reverse=True
         )
@@ -60,7 +65,7 @@ class FixCSV:
                 )
             )
         print("[4]: manual input")
-        print("[5]: do not modify")
+        print("[5]: do not modify \n")
         valid_input = False
         while not valid_input:
             val = input("Top 3 most similar values: select an option: ")
@@ -95,3 +100,20 @@ class FixCSV:
         if not self.quiet:
             print(string_to_validate, "->", fixed_val)
         return fixed_val
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 4:
+        print("Not enough arguments")
+        exit(1)
+
+    csv_path = sys.argv[1]
+    column = int(sys.argv[2])
+    path_to_possible_values = sys.argv[3]
+    with open(path_to_possible_values, "r") as f:
+        val = [line.strip() for line in f]
+    fcsv = FixCSV()
+    fcsv.set_possible_values(val)
+    fixed_column = fcsv.fix_csv_column(csv_path, column)
+    if fcsv.fixed_csv is not None:
+        fcsv.fixed_csv.to_csv(csv_path.replace(".", "_fix."), index=None, header=None)
