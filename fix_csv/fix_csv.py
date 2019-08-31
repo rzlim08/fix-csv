@@ -67,7 +67,7 @@ class FixCSV:
         ]
 
     def manual_fix_string(self, ratios, string_to_validate: str):
-        """manually fix the string with inputs"""
+        """manually fix the string with bash inputs"""
         # https://stackoverflow.com/questions/13070461/get-index-of-the-top-n-values-of-a-list-in-python
         print("\n")
         sorted_ratios = sorted(

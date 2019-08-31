@@ -2,11 +2,11 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(sys.path[0]) + "/../")
-from fix_csv import FixCSV
+from fix_csv.fix_csv import FixCSV
 
 
 def main():
-    fcsv = FixCSV(autofix=False)
+    fcsv = FixCSV(auto_fix=False)
     possible_values = [
         "ACGA",
         "ACGA_FU2",
