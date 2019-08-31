@@ -1,13 +1,10 @@
 import unittest
-import sys, os
-
-sys.path.append(os.path.abspath(sys.path[0]) + "/../")
-from fix_csv import FixCSV
+from fix_csv.fix_csv import FixCSV
 
 
 class TestFixCSV(unittest.TestCase):
     def setUp(self):
-        self.fcsv = FixCSV(autofix=True, quiet=True)
+        self.fcsv = FixCSV(auto_fix=True, quiet=True)
 
     def test_add_possible_value(self):
         self.fcsv.add_possible_value("possible")
@@ -34,7 +31,7 @@ class TestFixCSV(unittest.TestCase):
             "CTGV3",
         ]
         self.fcsv.set_possible_values(possible_values)
-        fixed_column = self.fcsv.fix_csv_column("DKEFSFAKEDATA.csv", 9)
+        fixed_column = self.fcsv.fix_csv_column(9, "data/DKEFSFAKEDATA.csv")
         self.assertLess(len(set(fixed_column)), len(possible_values))
 
 
